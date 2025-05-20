@@ -1,6 +1,6 @@
 {
   "name": "@richardgaunt/test-dist",
-  "version": "1.8.0",
+  "version": "1.10.0",
   "description": "Testing releases and pre-releases.",
   "main": "index.js",
   "scripts": {
