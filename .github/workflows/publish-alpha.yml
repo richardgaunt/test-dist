@@ -1,0 +1,59 @@
+name: Publish Alpha Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      alpha-identifier:
+        description: 'Alpha identifier (e.g. alpha.1, alpha.2)'
+        required: true
+        default: 'alpha.1'
+
+permissions:
+  contents: write
+
+jobs:
+  publish-alpha:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GHA_BOT_PAT }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install dependencies
+        run: npm install && npx playwright install
+
+      - name: Configure git
+        run: |
+          git config --global user.email "${GITHUB_ACTOR_ID}+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions alpha release workflow"
+
+      - name: Set alpha version
+        run: |
+          # Get current version
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          # Create alpha version
+          ALPHA_VERSION="${CURRENT_VERSION}-${{ github.event.inputs.alpha-identifier }}"
+          echo "ALPHA_VERSION=${ALPHA_VERSION}" >> ${GITHUB_ENV}
+          
+          # Update versions in all packages
+          npm version ${ALPHA_VERSION} --no-git-tag-version
+          
+          echo "RELEASE_TAG=alpha" >> ${GITHUB_ENV}
+
+      - name: Publish package
+        run: npm publish --verbose --access public --tag ${{ env.RELEASE_TAG }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPMJS_BOT_PAT }}
+
+      - name: Report alpha publish
+        run: |
+          echo "✅ Published alpha packages:"
+          echo "  - @richardgaunt/test-dist@${ALPHA_VERSION} (tag: alpha)"
+          echo ""
+          echo "These packages can be installed with:"
+          echo "npm install @richardgaunt/test-dist@alpha"
