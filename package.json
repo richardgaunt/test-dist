@@ -1,5 +1,5 @@
 {
-  "name": "@richargaunt/test-dist",
+  "name": "@richardgaunt/test-dist",
   "version": "1.0.0",
   "description": "Testing releases and pre-releases.",
   "main": "index.js",
@@ -7,5 +7,13 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Richard Gaunt",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/richardgaunt/test-dist.git"
+  },
+  "bugs": {
+    "url": "https://github.com/richardgaunt/test-dist/issues"
+  },
+  "homepage": "https://github.com/richardgaunt/test-dist#readme"
 }
