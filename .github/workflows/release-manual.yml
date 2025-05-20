@@ -73,7 +73,7 @@ jobs:
       - name: Report publish
         run: |
           echo "✅ Published release packages:"
-          echo "  - @richardgaunt/test-dist@${env.RELEASE_TAG}"
+          echo "  - @richardgaunt/test-dist@${{ env.RELEASE_TAG }}"
           echo ""
           echo "These packages can be installed with:"
-          echo "npm install @richardgaunt/test-dist@${env.RELEASE_TAG}"
+          echo "npm install @richardgaunt/test-dist@${{ env.RELEASE_TAG }}"
