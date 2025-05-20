@@ -1,5 +1,5 @@
 {
-  "name": "test-dist",
+  "name": "@richargaunt/test-dist",
   "version": "1.0.0",
   "description": "Testing releases and pre-releases.",
   "main": "index.js",
