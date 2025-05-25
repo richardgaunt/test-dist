@@ -27,8 +27,8 @@ jobs:
       - name: Verify package contents
         run: |
           # Expected directories
-          EXPECTED_test-dist1="test"
-          EXPECTED_test-dist2="test2"
+          EXPECTED_TEST-DIST1="test"
+          EXPECTED_TEST-DIST2="test2"
 
           failed=0
           for pkg in test-dist1 test-dist2; do
