@@ -1,0 +1,54 @@
+name: Publish Pre-release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  publish-prerelease:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GHA_BOT_PAT }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Set pre-release version
+        run: |
+          # Get current version from package.json
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+
+          # Extract major, minor, and patch
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+
+          # Increment minor version for next release
+          NEXT_MINOR=$((MINOR + 1))
+          DEV_VERSION="${MAJOR}.${NEXT_MINOR}.0-dev"
+
+          echo "DEV_VERSION=${DEV_VERSION}" >> ${GITHUB_ENV}
+
+      - name: Publish package
+        run: |
+          npm version ${DEV_VERSION} --no-git-tag-version --allow-same-version
+          npm publish --verbose --access public --tag dev
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPMJS_BOT_PAT }}
+
+      - name: Report pre-release publish
+        run: |
+          echo "✅ Published pre-release packages:"
+          echo "  - @richardgaunt/dist-tags@${PRERELEASE_VERSION} (tag: ${{ env.RELEASE_TAG }})"
+          echo ""
+          echo "These packages can be installed with:"
+          echo "npm install @richardgaunt/dist-tags@${{ env.RELEASE_TAG }}"

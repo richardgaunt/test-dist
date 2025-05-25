@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/richardgaunt/test-dist/issues"
   },
-  "homepage": "https://github.com/richardgaunt/test-dist#readme"
+  "homepage": "https://github.com/richardgaunt/test-dist#readme",
+  "dependencies": {
+    "@richardgaunt/test-dist": "^1.11.0-rc.0"
+  }
 }
