@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/richardgaunt/test-dist#readme",
   "dependencies": {
-    "@richardgaunt/test-dist": "^1.11.0-rc.0"
+    "@richardgaunt/test-dist": "^1.11.0-rc.0",
+    "@richardgaunt/test-dist2": "^1.10.0"
   },
   "workspaces": [
     "packages/*"
