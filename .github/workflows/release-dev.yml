@@ -22,7 +22,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
-        run: npm install --workspaces && npm install && npx playwright install
+        run: npm install --workspaces && npm install
 
       - name: Set pre-release version
         run: |
