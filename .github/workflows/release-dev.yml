@@ -27,8 +27,7 @@ jobs:
       - name: Verify package contents
         run: |
           # Expected directories
-          EXPECTED_TEST-DIST1="test"
-          EXPECTED_TEST-DIST2="test2"
+          EXPECTED_DIR="test2"
 
           failed=0
           for pkg in test-dist1 test-dist2; do
@@ -37,8 +36,7 @@ jobs:
             tarball=$(ls -t richardgaunt-$pkg-*.tgz | head -1)
 
             # Get expected dirs for this package
-            expected_var="EXPECTED_${pkg^^}"
-            expected_dirs="${!expected_var}"
+            expected_dirs="${EXPECTED_DIR}"
 
             # Check each directory
             missing_dirs=""
