@@ -1,5 +1,5 @@
 {
-  "name": "@richardgaunt/test-dist",
+  "name": "@richardgaunt/test-dist1",
   "version": "1.10.0",
   "description": "Testing releases and pre-releases.",
   "main": "index.js",
@@ -18,8 +18,5 @@
   "homepage": "https://github.com/richardgaunt/test-dist#readme",
   "dependencies": {
     "@richardgaunt/test-dist": "^1.11.0-rc.0"
-  },
-  "workspaces": [
-    "packages/*"
-  ]
+  }
 }

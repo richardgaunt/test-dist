@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  publish-prerelease:
+  publish-dev:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,7 +22,13 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --workspaces && npm install && npx playwright install
+
+      - name: Check code style
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test:ci
 
       - name: Set pre-release version
         run: |
@@ -38,17 +44,29 @@ jobs:
 
           echo "DEV_VERSION=${DEV_VERSION}" >> ${GITHUB_ENV}
 
-      - name: Publish package
-        run: |
+          # Update versions in all packages
           npm version ${DEV_VERSION} --no-git-tag-version --allow-same-version
-          npm publish --verbose --access public --tag dev
+          npm version ${DEV_VERSION} --no-git-tag-version --allow-same-version --workspace=packages/test-dist1
+          npm version ${DEV_VERSION} --no-git-tag-version --allow-same-version --workspace=packages/test-dist2
+
+      - name: Publish @civictheme/test-dist1 package
+        working-directory: packages/test-dist1
+        run: npm publish --verbose --access public --tag dev
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPMJS_BOT_PAT }}
 
-      - name: Report pre-release publish
+      - name: Publish @civictheme/test-dist2 package
+        working-directory: packages/test-dist2
+        run: npm publish --verbose --access public --tag dev
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPMJS_BOT_PAT }}
+
+      - name: Report dev version publish
         run: |
-          echo "✅ Published pre-release packages:"
-          echo "  - @richardgaunt/dist-tags@${PRERELEASE_VERSION} (tag: ${{ env.RELEASE_TAG }})"
+          echo "✅ Published dev pre-release packages:"
+          echo "  - @civictheme/test-dist1@${DEV_VERSION}"
+          echo "  - @civictheme/test-dist2@${DEV_VERSION}"
           echo ""
           echo "These packages can be installed with:"
-          echo "npm install @richardgaunt/dist-tags@${{ env.RELEASE_TAG }}"
+          echo "npm install @civictheme/test-dist1@dev"
+          echo "npm install @civictheme/test-dist2@dev"
