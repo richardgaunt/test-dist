@@ -49,13 +49,13 @@ jobs:
           npm version ${DEV_VERSION} --no-git-tag-version --allow-same-version --workspace=packages/test-dist1
           npm version ${DEV_VERSION} --no-git-tag-version --allow-same-version --workspace=packages/test-dist2
 
-      - name: Publish @civictheme/test-dist1 package
+      - name: Publish @richardgaunt/test-dist1 package
         working-directory: packages/test-dist1
         run: npm publish --verbose --access public --tag dev
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPMJS_BOT_PAT }}
 
-      - name: Publish @civictheme/test-dist2 package
+      - name: Publish @richardgaunt/test-dist2 package
         working-directory: packages/test-dist2
         run: npm publish --verbose --access public --tag dev
         env:
@@ -64,9 +64,9 @@ jobs:
       - name: Report dev version publish
         run: |
           echo "✅ Published dev pre-release packages:"
-          echo "  - @civictheme/test-dist1@${DEV_VERSION}"
-          echo "  - @civictheme/test-dist2@${DEV_VERSION}"
+          echo "  - @richardgaunt/test-dist1@${DEV_VERSION}"
+          echo "  - @richardgaunt/test-dist2@${DEV_VERSION}"
           echo ""
           echo "These packages can be installed with:"
-          echo "npm install @civictheme/test-dist1@dev"
-          echo "npm install @civictheme/test-dist2@dev"
+          echo "npm install @richardgaunt/test-dist1@dev"
+          echo "npm install @richardgaunt/test-dist2@dev"

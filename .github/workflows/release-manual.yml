@@ -25,7 +25,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --workspaces && npm install
 
 
       - name: Configure git
@@ -36,21 +36,33 @@ jobs:
       - name: Bump release version
         run: |
           echo "NEW_VERSION=$(npm --no-git-tag-version version ${RELEASE_LEVEL})" >> ${GITHUB_ENV}
-          
+
           # Update versions in workspace packages
-          npm version ${RELEASE_LEVEL} --no-git-tag-version
-          
+          npm version ${RELEASE_LEVEL} --no-git-tag-version --workspace=packages/test-dist1
+          npm version ${RELEASE_LEVEL} --no-git-tag-version --workspace=packages/test-dist2
+
           echo "RELEASE_TAG=latest" >> ${GITHUB_ENV}
         env:
           RELEASE_LEVEL: ${{ github.event.inputs.release-level }}
 
       - name: Commit package.json changes and create tag
         run: |
+          # Add package files
           git add "package.json"
+          git add "packages/test-dist1/package.json"
+          git add "packages/test-dist2/package.json"
+
           git commit -m "Released version ${{ env.NEW_VERSION }}."
           git tag ${{ env.NEW_VERSION }}
 
-      - name: Publish
+      - name: Publish richardgaunt/test-dist1 package
+        working-directory: packages/test-dist1
+        run: npm publish --verbose --access public --tag ${{ env.RELEASE_TAG }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPMJS_BOT_PAT }}
+
+      - name: Publish richardgaunt/test-dist2 package
+        working-directory: packages/test-dist2
         run: npm publish --verbose --access public --tag ${{ env.RELEASE_TAG }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPMJS_BOT_PAT }}
@@ -69,11 +81,3 @@ jobs:
           tag: ${{ env.NEW_VERSION }}
           version: ${{ env.NEW_VERSION }}
           publish: true
-
-      - name: Report publish
-        run: |
-          echo "✅ Published release packages:"
-          echo "  - @richardgaunt/test-dist@${{ env.RELEASE_TAG }}"
-          echo ""
-          echo "These packages can be installed with:"
-          echo "npm install @richardgaunt/test-dist@${{ env.RELEASE_TAG }}"
